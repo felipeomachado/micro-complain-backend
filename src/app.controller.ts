@@ -18,8 +18,8 @@ export class AppController {
     try {
       await this.appService.createComplain(complain);
       await channel.ack(originalMessage);
-    }catch(error) {
-      this.logger.error(`error create-complain: ${JSON.stringify(error.message)}`);
+    }catch(exception) {
+      this.logger.error(`error create-complain: ${JSON.stringify(exception.message)}`);
     }
   }
 
@@ -30,8 +30,8 @@ export class AppController {
     
     try {
       return await this.appService.findComplains(queryComplainDto);
-    }catch(error) {
-      this.logger.error(`error find-complains: ${JSON.stringify(error.message)}`);
+    }catch(exception) {
+      this.logger.error(`error find-complains: ${JSON.stringify(exception.message)}`);
     } finally {
       await channel.ack(originalMessage);
     }
@@ -44,8 +44,8 @@ export class AppController {
     
     try {
       return await this.appService.countComplains(queryComplainDto);
-    }catch(error) {
-      this.logger.error(`error count-complains: ${JSON.stringify(error.message)}`);
+    }catch(exception) {
+      this.logger.error(`error count-complains: ${JSON.stringify(exception.message)}`);
     } finally {
       await channel.ack(originalMessage);
     }
@@ -58,8 +58,8 @@ export class AppController {
     
     try {
       return await this.appService.findComplainByIdOrThrow(_id);
-    }catch(error) {
-      this.logger.error(`error find-complain-by-id: ${JSON.stringify(error.message)}`);
+    }catch(exception) {
+      this.logger.error(`error find-complain-by-id: ${JSON.stringify(exception.message)}`);
     } finally {
       await channel.ack(originalMessage);
     }
@@ -73,8 +73,8 @@ export class AppController {
     try {
       await this.appService.updateComplain(data.id, data.complain);
       await channel.ack(originalMessage);
-    }catch(error) {
-      this.logger.error(`error update-complain: ${JSON.stringify(error.message)}`);
+    }catch(exception) {
+      this.logger.error(`error update-complain: ${JSON.stringify(exception.message)}`);
     }
   }
 }

@@ -14,76 +14,47 @@ export class AppService {
   private readonly logger = new Logger(AppService.name);
 
   async createComplain(createComplainDto: CreateComplainDto): Promise<Complain> {
-    try {
       const complainSaved = await new this.complainModel(createComplainDto).save();
       
       if(!complainSaved) {
-        this.logger.error('Problem to create a complain');
         throw new RpcException('Problem to create a complain');
       }
       return complainSaved;
-    }catch(exception) {
-      this.logger.error(`error: ${JSON.stringify(exception.message)}`);
-      throw new RpcException(exception.message);
-    }
   }
 
   async findComplainByIdOrThrow(_id: string) : Promise<Complain> {
-    try {
-      const complain = this.complainModel.findById(_id); 
-
-      if(!complain) {
-        throw new RpcException('Complain not found');
-      }
-      return complain;
-    }catch(exception) {
-      this.logger.error(`error: ${JSON.stringify(exception.message)}`);
-      throw new RpcException(exception.message);
-    }
+    return await this.complainModel.findById(_id); 
   }
 
   async findComplains(queryComplainDto: QueryComplainDto) : Promise<Array<Complain>> {
-    try {
-      /* need fix this, searching the solution... 
-        query in nested document is not working
-        ex: complainModel.find({'company._id': queryComplainDto.companyId})
-      */
-      const complainsFound = await this.complainModel.find();
-      
-      let complainsResult = complainsFound;
-      
-      if(queryComplainDto){
-        if(queryComplainDto.cityId) {    
-          complainsResult = complainsResult.filter(f => f.locale._id.toString() === queryComplainDto.cityId);
-        }
-
-        if(queryComplainDto.companyId) {
-          complainsResult = complainsResult.filter(f => f.company._id.toString() === queryComplainDto.companyId);
-        }
+    
+    /* need fix this, searching the solution... 
+      query in nested document is not working
+      ex: complainModel.find({'company._id': queryComplainDto.companyId})
+    */
+    const complainsFound = await this.complainModel.find();
+    
+    let complainsResult = complainsFound;
+    
+    if(queryComplainDto){
+      if(queryComplainDto.cityId) {    
+        complainsResult = complainsResult.filter(f => f.locale._id.toString() === queryComplainDto.cityId);
       }
-      return complainsResult;
-    }catch(exception) {
-      this.logger.error(`error: ${JSON.stringify(exception.message)}`);
-      throw new RpcException(exception.message);
+
+      if(queryComplainDto.companyId) {
+        complainsResult = complainsResult.filter(f => f.company._id.toString() === queryComplainDto.companyId);
+      }
     }
+    return complainsResult;
+    
   }
 
   async countComplains(queryComplainDto: QueryComplainDto) : Promise<number> {
-    try {
-      return (await this.findComplains(queryComplainDto)).length;
-    }catch(exception) {
-      this.logger.error(`error: ${JSON.stringify(exception.message)}`);
-      throw new RpcException(exception.message);
-    }
+    return (await this.findComplains(queryComplainDto)).length;
   }
 
   async updateComplain(_id: string, updateComplainDto: UpdateComplainDto): Promise<void> {
-    try {
-      await this.complainModel.findByIdAndUpdate(_id, updateComplainDto);
-    }catch(exception) {
-      this.logger.error(`error: ${JSON.stringify(exception.message)}`);
-      throw new RpcException(exception.message);
-    }
+    await this.complainModel.findByIdAndUpdate(_id, updateComplainDto);
   }
   
 }
